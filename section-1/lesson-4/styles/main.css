@@ -1,0 +1,46 @@
+.button {
+    padding: 5px 15px;
+    margin: 10px 5px;
+    color: #fff;
+    background-color: rgb(36, 122, 214);
+    font-family: system-ui, sans-serif;
+    outline: none;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-decoration: none;
+    position: relative;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.button:hover {
+    opacity: 0.9;
+}
+
+.button:active {
+    opacity: 0.8;
+    transform: translateY(1px);
+}
+
+.button.red {
+    background-color: rgb(231, 14, 14);
+}
+.button.orange {
+    background-color: rgb(211, 142, 14);
+}
+.button.yellow {
+    background-color: rgb(214, 214, 10);
+}
+.button.green {
+    background-color: rgb(12, 240, 12);
+}
+.button.skyblue {
+    background-color: rgb(40, 172, 224);
+}
+.button.blue {
+    background-color: rgb(15, 15, 226);
+}
+.button.purple {
+    background-color: rgb(219, 13, 219);
+}
