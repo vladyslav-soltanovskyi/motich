@@ -14,10 +14,9 @@ class Buttons {
         target.nextElementSibling.style.color = "orange";
     }
 
-    yellow(e) {
-        const container = e.currentTarget;
-        const text = container.children[1].textContent;
-        container.lastElementChild.textContent = text;
+    yellow() {
+        const text = this._elem.children[1].textContent;
+        this._elem.lastElementChild.textContent = text;
     }
 
     green() {
@@ -31,14 +30,12 @@ class Buttons {
         target.after(cloneButton);
     }
 
-    blue(e) {
-        const container = e.currentTarget;
-        container.firstElementChild.hidden = true;
+    blue() {
+        this._elem.firstElementChild.hidden = true;
     }
 
-    purple(e) {
-        const container = e.currentTarget;
-        const firstElement = container.firstElementChild; 
+    purple() {
+        const firstElement = this._elem.firstElementChild; 
         
         if(firstElement.hidden) {
             firstElement.hidden = false;
