@@ -1,0 +1,140 @@
+.screen {
+    width: 100%;
+    min-height: 100vh;
+    transition: transform 0.3s;
+    overflow: hidden;
+    position: absolute;
+    background: #f5f5f8;
+    display: none;
+    transition: opacity 0.5s;
+}
+
+.screen.left {
+    transform: translateX(-110%);
+}
+
+.screen.right {
+    transform: translateX(110%);
+}
+
+.screen > .container {
+    max-width: 1024px;
+    margin: 0 auto;
+    padding: 60px 50px 110px 50px;
+}
+
+.container > .title {
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+}
+
+.container .section {
+    margin: 50px 0;
+}
+
+.container .section > .title {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 17px;
+    line-height: 21px;
+    color: #000000;
+}
+
+.container .section > .block {
+    background: #FFFFFF;
+    box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.03);
+    border-radius: 20px;
+    padding: 20px 17px 10px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.block-poster {
+    max-width: 60px;
+    height: 60px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+
+.block-poster img {
+    width: 100%;
+    height: 100%;
+}
+
+.block-info {
+    width: calc(100% - 75px);
+    margin-left: 15px;
+}
+
+.block-info > .title {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 900;
+    font-size: 18px;
+    line-height: 22px;
+    color: #000000;
+    margin: 0;
+}
+
+.block-info > .date {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 16px;
+    color: #000000;
+    opacity: 0.5;
+    margin: 8px 0;
+}
+
+.block-info > .text {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 16px;
+    color: #000000;
+    opacity: 0.5;
+    margin: 0;
+}
+
+.block-item {
+    display: flex;
+    align-items: center;
+    padding: 16px 0;
+    border-bottom: 0.5px solid rgba(0, 0, 0, 0.3);
+    width: 100%;
+}
+
+.block-item > .date {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 17px;
+    line-height: 21px;
+    color: #000000;
+}
+
+.block-item > .status {
+    min-width: 40px;
+    height: 40px;
+    background: #F47B0A;
+    border-radius: 10px;
+    margin: 0 15px;
+}
+
+.block-item > .text {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 17px;
+    line-height: 21px;
+    color: #000000;
+    word-break: break-word;
+}
