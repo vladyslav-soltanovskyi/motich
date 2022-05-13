@@ -1,135 +1,94 @@
-import { hide } from "../utils/animation.js";
-import Validator from "../utils/Validator.js";
+import Validator from "../core/Validator.js";
+import { jsx, Component, createPortal } from "../core/framework/index.js";
+import { statuses } from "../constans/statuses.js";
 
-export default function modal(props = {}) {
-  const {
-    onSubmit = () => {},
-    note = {
-      title: "",
-      status: "",
-      date: "",
-      text: "",
-    },
-    btnSubmitText = "Создать",
-  } = props;
-  const $overlay = document.createElement("div");
-  $overlay.classList.add("overlay");
-  $overlay.innerHTML = `<div class="modal">
-            <div class="modal-header">
-                <h3 class="title">Создать заметку</h3>
-            </div>
-            <div class="modal-main">
-                <div class="modal-content">
-                    <form id="form-note">
-                        <div class="form-group">
-                            <label for="title">Заголовок</label>
-                            <input type="text" id="title" name="title" value="${note.title}" placeholder="ВВЕДИТЕ ЗАМЕТКУ">
-                        </div>
-                        <div class="form-group">
-                            <label for="status">Выберите цвет заметки</label>
-                            <input type="text" id="status" name="status" value="${note.status}" placeholder="ВВЕДИТЕ ЦВЕТ">
-                        </div>
-                        <div class="form-group">
-                            <label for="date">Выберите дату заметки</label>
-                            <input type="date" id="date" name="date" value="${note.date}" placeholder="ВВЕДИТЕ ДАТУ">
-                        </div>
-                        <div class="form-group">
-                            <label for="text">Описание</label>
-                            <input type="text" id="text" name="text" value="${note.text}" placeholder="ВВЕДИТЕ ОПИСАНИЕ">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-btn-actions">
-                    <button class="btn cancle">Отмена</button>
-                    <button class="btn sx orange" id="submit" type="submit" form="form-note">${btnSubmitText}</button>
-                </div>
-            </div>
-        </div>`;
-  const $modal = $overlay.querySelector(".modal");
-  const $btnCancle = $overlay.querySelector(".cancle");
-  const $btnSubmit = $overlay.querySelector("#submit");
-  const $form = $overlay.querySelector("form");
-  document.body.classList.add("hidden");
+const modal = document.querySelector('#modal');
 
-  const handleSubmit = function (e) {
+const rules = {
+  title: ["require", "minLength|3"],
+  status: ["require"],
+  text: ["require", "minLength|3"],
+};
+
+export default class Modal extends Component {
+
+  constructor(props) {
+    super(props);
+    
+    const { note = { title: '', status: '', text: '' } } = this.props;
+
+    this.initState({
+      errors: {},
+      isLoading: false,
+      data: note
+    });
+  }
+
+  submitForm = (e) => {
     e.preventDefault();
 
-    resetErrors();
-
-    const data = Object.fromEntries(new FormData(e.target));
+    let data = Object.fromEntries(new FormData(e.target));
     const validator = new Validator();
 
-    validator.make(data, {
-      date: ["require"],
-      title: ["require", "minLength|3"],
-      status: ["require", "minLength|3"],
-      text: ["require", "minLength|3"],
-    });
+    this.state.data = data;
+    
+    validator.make(data, rules);
 
     const errors = validator.fails();
 
     if (!errors.status) {
-      const { messages } = errors;
-
-      for (const error in messages) {
-        if (error in $form) {
-          const $input = $form[error];
-          $input.classList.add("error");
-          const $error = $input.nextElementSibling;
-          if (!$error) {
-            $input.insertAdjacentHTML(
-              "afterend",
-              `<div class="error-text">${messages[error]}</div>`
-            );
-          } else {
-            $error.textContent = messages[error];
-          }
-        }
-      }
+      this.state.errors = errors.messages;
       return;
     }
 
-    $btnSubmit.textContent = "Загрузка...";
-    $btnSubmit.classList.add('disabled');
-    $btnSubmit.disabled = true;
+    data = { ...data, date: new Date()};
 
-    onSubmit(data, {
-      onSuccess() {
-          hideModal();
-      },
-      onDone() {
-          $btnSubmit.textContent = btnSubmitText;
-          $btnSubmit.classList.remove('disabled');
-          $btnSubmit.disabled = false;
-      }
+    this.state.isLoading = true;
+    this.props.onSubmit(data).then(() => {
+      this.state.data = { title: '', status: '', text: '' };
+      this.props.hideModal();
+    }).finally(() => {
+      this.state.isLoading = false;
     });
   };
 
-  function resetErrors() {
-    const $errors = $form.querySelectorAll(".error-text");
-    const $inputsError = $form.querySelectorAll("input.error");
-    if ($errors === null) {
-      return;
-    }
-    $inputsError.forEach(($input) => $input.classList.remove("error"));
-    $errors.forEach(($error) => ($error.textContent = ""));
+  render() {
+    const { hideModal, isOpen } = this.props;
+    const { errors, data, isLoading } = this.state;
+
+    return createPortal(isOpen ? jsx`<div className="overlay" onClick="${hideModal}">
+      <div className="modal" onClick="${(e) => e.stopPropagation()}">
+        <div className="modal-header">
+            <h3 className="title">New Note</h3>
+        </div>
+        <div className="modal-main">
+            <div className="modal-content">
+                <form onSubmit="${this.submitForm}">
+                    <div className="form-group">
+                        <label for="title">TITLE</label>
+                        <input className="form-input ${!!errors.title ? 'error' : ''}" type="text" id="title" name="title" value="${data.title}" />
+                        <div className="error-text">${!!errors.title ? errors.title : ''}</div>
+                    </div>
+                    <div className="form-group">
+                        <label for="status">STATUS</label>
+                        <select className="form-input ${!!errors.status ? 'error' : ''}" id="status" name="status" value="${data.status}">
+                          ${statuses.slice(1).map((status) => jsx`<option>${status.name}</option>`)}
+                        </select>
+                        <div className="error-text">${!!errors.status ? errors.status : ''}</div>
+                    </div>
+                    <div className="form-group">
+                        <label for="text">CONTENT</label>
+                        <input className="form-input ${!!errors.text ? 'error' : ''}" type="text" id="text" name="text" value="${data.text}" />
+                        <div className="error-text">${!!errors.text ? errors.text : ''}</div>
+                    </div>
+                    <div className="modal-btn-actions">
+                        <button className="btn cancle" type="button" onClick="${hideModal}">Cancle</button>
+                        <button className="btn sx orange ${ isLoading ? 'disabled' : ''}" disabled="${isLoading}" id="submit" type="submit">${ isLoading ? '...Sending' : 'Send'}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>` : jsx`<div></div>`, modal);
   }
-
-  const hideModal = () => {
-    hide({
-      box: $overlay,
-      leave: "leave-component",
-      onEnd: () => {
-        document.body.classList.remove("hidden");
-        $overlay.remove();
-      },
-    });
-  };
-
-  $btnCancle.addEventListener("click", hideModal);
-  $form.addEventListener("submit", handleSubmit);
-  $modal.addEventListener("click", (e) => e.stopPropagation());
-  $overlay.addEventListener("click", hideModal);
-  document.body.appendChild($overlay);
-  return $overlay;
 }

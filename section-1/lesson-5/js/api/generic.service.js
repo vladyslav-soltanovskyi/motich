@@ -12,7 +12,7 @@ export const request = async ({ url = '', method = "GET", data = {} }) => {
     });
     
     if (!response.ok) {
-        throw new Error('Проблемы с сервером');
+        throw new Error(response.statusText);
     }
 
     return await response.json();

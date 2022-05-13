@@ -35,18 +35,3 @@ export function watchObj(node, callback){
         }
     });
 }
-
-export function convertDate(date) {
-    return (new Date(date)).toLocaleString("ru-RU", {
-      year: "numeric",
-      month: "numeric",
-      day: "numeric"
-    });
-}
-
-export function convertTime(date) {
-    return (new Date(date)).toLocaleString("ru-RU", {
-      month: "numeric",
-      day: "numeric"
-    });
-}

@@ -13,9 +13,6 @@
 
 .enter-component {
     opacity: 0;
-    /* transform: translateX(-500px); */
-    /* transform: scale(100); */
-    /* transform: translate3d(-42px, -62px, -135px); */
 }
 
 .enter-active-component {
@@ -23,24 +20,17 @@
 }
 
 .leave-component {
-    /* transform: translateX(500px); */
-    /* transform: scale(0.001); */
-    /* transform: translate3d(42px, -62px, -135px); */
     opacity: 0;
 }
 
-::-webkit-scrollbar {
+body::-webkit-scrollbar {
     width: 10px;
 }
 
-::-webkit-scrollbar-track {
-    background: #f1f1f1; 
-}
-
-::-webkit-scrollbar-thumb {
+body::-webkit-scrollbar-thumb {
     background: #888; 
 }
 
-::-webkit-scrollbar-thumb:hover {
+body::-webkit-scrollbar-thumb:hover {
     background: #555; 
 }

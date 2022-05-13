@@ -34,25 +34,25 @@ class Validator {
     }
 
     require(value) {
-        return !value ? { status: false, errorMessage: "Заполните поле!" } : { status: true };
+        return !value ? { status: false, errorMessage: "Required field!" } : { status: true };
     }
 
     minLength (value, minLength) {
-        return (value.length < minLength) ? { status: false, errorMessage: `Поле должно содержать не меньше ${minLength} символов` } : { status: true };
+        return (value.length < minLength) ? { status: false, errorMessage: `The field must contains at least ${minLength} characters` } : { status: true };
     }
 
     maxLength (value, maxLength) {
-        return (value.length > maxLength) ? { status: false, errorMessage: `Поле должно содержать не больше ${maxLength} символов` } : { status: true };
+        return (value.length > maxLength) ? { status: false, errorMessage: `The field must contains no more than ${maxLength} characters` } : { status: true };
     }
     
     number(value) {
         let regex = /^\d+$/;
-        return !(regex.test(value)) ? { status: false, errorMessage: "Поле должно содержать число" } : { status: true };
+        return !(regex.test(value)) ? { status: false, errorMessage: "The field must contains number" } : { status: true };
     }
 
     email(value) {
         let regex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,24})+$/;
-        return !(regex.test(value)) ? { status: false, errorMessage: "Не валидный email" } : { status: true };
+        return !(regex.test(value)) ? { status: false, errorMessage: "Not valid email" } : { status: true };
     }
 }
 

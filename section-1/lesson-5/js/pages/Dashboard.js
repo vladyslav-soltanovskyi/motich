@@ -1,97 +1,128 @@
-import LastNote from "../components/LastNote.js";
+import LastNoteItem from "../components/LastNoteItem.js";
+import FilterByStatutes from "../components/FilterByStatutes.js";
 import Notes from "../components/Notes.js";
-import Modal from "../components/Modal.js";
-import { watchObj } from "../utils/utils.js";
 import Message from "../utils/Message.js";
-import { show } from "../utils/animation.js";
-import { createNote, getNotes } from "../api/notes.service.js";
-import Preloader from "../components/Preloader.js";
+import Modal from "../components/Modal.js";
+import noteApi from "../api//notes.service.js";
+import { jsx, Component } from "../core/framework/index.js";
 
 const initialState = {
-    notes: []
+    notes: [],
+    isLoading: true,
+    isOpenModal: false,
+    status: 'All'
 }
 
-export default function Dashboard() {
-    const screen = document.createElement('div');
-    screen.classList.add('screen');
-    screen.innerHTML = `
-    <div class="container">
-        <h2 class="title">Мои заметки</h2>
-        <div class="section" id="block-last-note">
-        </div>
-        <div class="section" id="block-notes">
-        </div>
-        <div class="btn-container">
-            <button class="btn full-width orange" id="add-note">Создать заметку</button>
-        </div>
-    </div>`
+export default class Dashboard extends Component {
 
-    const $blockNotes = screen.querySelector('#block-notes');
-    const $lastNote = screen.querySelector('#block-last-note');
-    const $addNote = screen.querySelector('#add-note');
-    const state = watchObj(initialState, render);
+    constructor(props) {
+        super(props);
+
+        this.initState(initialState);
+    }
     
+    componentDidMount() {
+        this.fetchNotes();
+    }
 
-    fetchNotes();
-    
-    $addNote.addEventListener('click', function() {
-        const $modal = Modal({
-            onSubmit: addNote
-        });
-
-        show({
-            box: $modal,
-            enter_active: 'enter-active-component',
-            enter: 'enter-component'
-        });
-    })
-
-    render();
-
-
-    async function addNote(data, actions) {
+    addNote = async (data) => {
         try {
-            const note = await createNote(data);
-            new Message({ message: "заметка добавлена" });
-            state.notes.push(note);
-            actions?.onSuccess();
+            const note = await noteApi.create(data);
+            this.state.notes.push(note);
+            new Message({ message: "Note added" });
         } catch (e) {
-            new Message({ message: "Ошибка при отправке" });
-        } finally {
-            actions?.onDone();
+            new Message({ message: "Error sending" });
         }
     }
 
-    async function fetchNotes() {
-        const preloader = Preloader();
+    fetchNotes = async () => {
         try {
-            document.body.appendChild(preloader);
-            const notes = await getNotes();
-            state.notes = notes;
+            this.state.isLoading = true;
+            const notes = await noteApi.getAll();
+            this.state.notes = notes;
         } catch (e) {
-            console.log(e);
-            new Message({ message: "Ошибка при получении" });
+            new Message({ message: "Error on receipt" });
         } finally {
-            preloader.remove();
+            this.state.isLoading = false;
         }
     }
 
-    function render() {
-        renderNotes();
-        renderLastNote();
+    handleDeleteNote = async (id) => {
+        try {
+            await noteApi.delete(id);
+            new Message({ message: "Note delete" });
+            this.state.notes = this.state.notes.filter(note => note.id !== id);
+        } catch (e) {
+            new Message({ message: "Error sending" });
+        }
     }
 
-    function renderLastNote() {
-        const { notes } = state;
-        const lastNode = notes.sort((a, b) => (new Date(b.createdAt).getTime()) - (new Date(a.createdAt).getTime()))[0];
-        $lastNote.innerHTML = LastNote(lastNode);
+    handleEditNote = async (id, data) => {
+        try {
+            const changedNote = await noteApi.edit(id, data);
+            new Message({ message: "Note changed" });
+            this.state.notes = this.state.notes.map(note => note.id === id ? changedNote : note);
+        } catch (e) {
+            new Message({ message: "Error sending" });
+        }
+    }
+    
+    setStatus = (status) => {
+        this.state.status = status;
+    }
+    
+    showModal = () => {
+        this.state.isOpenModal = true;
     }
 
-    function renderNotes() {
-        const { notes } = state;
-        $blockNotes.innerHTML = Notes(notes);
+    toggleModal = () => {
+        this.state.isOpenModal = !this.state.isOpenModal;
     }
 
+    hideModal = () => {
+        this.state.isOpenModal = false;
+    }
 
-    return screen;
+    getLastNote() {
+        return this.state.notes.at(-1);
+    }
+
+    getFilteredNotes = () => {
+        return this.state.notes.filter(note => {
+            if (this.state.status === "All") {
+                return true
+            }
+
+            return this.state.status === note.status;
+        })
+    }
+
+    render() {
+        const { isLoading, isOpenModal, status } = this.state;
+        
+        if (isLoading) {
+            return jsx`<div className="preloader"><div className="lds-dual-ring"></div></div>`
+        }
+
+        const filteredNotes = this.getFilteredNotes();
+
+        return (
+            jsx`<div className="screen">
+                <div className="container">
+                    <${Modal} onSubmit="${this.addNote}" hideModal="${this.hideModal}" isOpen="${isOpenModal}" />
+                    <h2 className="title">My Notes</h2>
+                    <${LastNoteItem} note="${this.getLastNote()}" />
+                    <${FilterByStatutes} changeStatus="${this.setStatus}" />
+                    <div className="section">
+                        <h3 className="title">${status} Notes</h3>
+                        <${Notes} notes="${filteredNotes}" onDelete="${this.handleDeleteNote}" onEdit="${this.handleEditNote}" />
+                    </div>
+                    <div className="btn-container">
+                        <button className="btn full-width orange" id="add-note" onClick="${this.showModal}">Add Note</button>
+                    </div>
+                </div>
+        </div>`
+        )
+    }
+
 }

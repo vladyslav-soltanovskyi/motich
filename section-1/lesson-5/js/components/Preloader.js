@@ -1,6 +1,7 @@
-export default function Preloader() {
-    const preloader = document.createElement('div');
-    preloader.classList.add('preloader');
-    preloader.innerHTML = '<div class="lds-dual-ring"></div>';
-    return preloader;
+import { jsx, Component } from "../core/framework/index.js";
+
+export default class Preloader extends Component {
+    render() {
+        return jsx`<div className="preloader"><div className="lds-dual-ring"></div></div>`
+    }
 }

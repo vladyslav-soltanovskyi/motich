@@ -8,6 +8,7 @@
     justify-content: center;
     cursor: pointer;
     transition: opacity 0.3s;
+    z-index: 100;
 }
 
 .overlay.hide {
@@ -42,8 +43,13 @@
     text-transform: uppercase;
     color: #000000;
 }
+
 .modal-content {
-    padding: 16px 37px 0;
+    padding: 16px 35px 0;
+}
+
+.form-group {
+    display: block;
 }
 
 .form-group:not(:last-child) {
@@ -59,7 +65,21 @@
     color: #000000;
 }
 
-.form-group > input {
+.form-group > .form-color-picker {
+    margin: 11px 0;
+    display: block;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 22px;
+    color: #000000;
+    border: none;
+    outline: none;
+    border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+}
+
+.form-group > .form-input {
     width: 100%;
     padding: 11px 0;
     display: block;
@@ -74,7 +94,15 @@
     border-bottom: 2px solid rgba(0, 0, 0, 0.5);
 }
 
-.form-group > input.error {
+.form-group > .form-input > option {
+    font-weight: normal;
+    display: block;
+    white-space: nowrap;
+    min-height: 1.2em;
+    padding: 0px 2px 1px;
+}
+
+.form-group > .form-input.error {
     color: red;
     border-bottom: 2px solid rgba(255, 0, 0, 0.8);
 }
@@ -83,7 +111,7 @@
     color: red;
 }
 
-.form-group > input:focus {
+.form-group > .form-input:focus {
     border-bottom: 2px solid #ff4b3a;
 }
 
@@ -92,5 +120,11 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 19px 22px 19px 37px;
+    padding: 19px 22px 19px 30px;
+}
+
+@media screen and (max-width: 550px) {
+    .modal-btn-actions {
+        padding: 19px 0px 19px 0px;
+    }   
 }

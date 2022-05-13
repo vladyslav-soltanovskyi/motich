@@ -32,7 +32,7 @@ export function show(obj) {
     box.addEventListener('transitionend', handler);
 };
 
-function raf(fn) {
+export function raf(fn) {
     window.requestAnimationFrame(function() {
         window.requestAnimationFrame(function() {
             fn();

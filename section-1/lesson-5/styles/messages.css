@@ -7,6 +7,7 @@
     right: 0;
     overflow: hidden;
     z-index: 1000;
+    pointer-events: none;
 }
 
 .message {
@@ -20,6 +21,7 @@
     align-items: center;
     position: relative;
     overflow: hidden;
+    pointer-events: visible;
 }
 
 .btn-close {

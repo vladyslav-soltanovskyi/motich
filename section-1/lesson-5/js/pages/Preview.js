@@ -1,23 +1,18 @@
-export default function Preview() {
-  const screen = document.createElement("div");
-  screen.classList.add("screen", "preview");
+import { jsx, Component } from "../core/framework/index.js";
 
-  screen.innerHTML = `
-        <div class="circle"></div>
-        <div class="title">NOTES MOTICH</div>
-        <div class="boy"></div>
-        <div class="girl"></div>
-        <div class="btn-container">
-            <a href="#dashboard">
-                <button class="btn full-width white">Поехали</button>
-            </a>
-        </div>`;
-    
-    // const btn = screen.querySelector('.btn');
+export default class Preview extends Component {
 
-    // btn.addEventListener('click', () => {
-    //     location.hash = 'dashboard';
-    // });
-
-    return screen;
+  render() {
+    return jsx`<div className="screen preview">
+      <div className="circle"></div>
+      <div className="title">NOTES MOTICH</div>
+      <div className="boy"></div>
+      <div className="girl"></div>
+      <div className="btn-container">
+          <a href="#dashboard">
+              <button className="btn full-width white">Get Started</button>
+          </a>
+      </div>
+    </div>`
+  }
 }
